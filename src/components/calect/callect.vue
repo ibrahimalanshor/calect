@@ -33,7 +33,7 @@ const props = defineProps({
   },
   classes: {
     type: Object,
-    default: () => {}
+    default: () => ({})
   },
   emptyMessage: {
     type: String,
