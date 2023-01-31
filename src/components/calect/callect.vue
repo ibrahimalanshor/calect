@@ -23,7 +23,7 @@ const props = defineProps({
     type: String,
     default: null,
   },
-  isLoading: {
+  loading: {
     type: Boolean,
     default: false,
   },
@@ -70,6 +70,7 @@ const style = computed(() => {
     clearButton: [styleClasses.clearButton, props.classes.clearButton],
     clearIcon: [styleClasses.clearIcon, props.classes.clearIcon],
     content: [styleClasses.content, props.classes.content],
+    contentHidden: [styleClasses.contentHidden],
     list: [styleClasses.list, props.classes.list],
     item: [styleClasses.item, props.classes.item],
     itemActive: [styleClasses.itemActive, props.classes.itemActive],
@@ -102,7 +103,7 @@ function handleClickItem(item) {
   hide();
   emit('search', search.value);
 }
-function handleInput() {
+function handleInput(e) {
   debounceSearch();
 }
 function handleFocus() {
@@ -146,7 +147,7 @@ onMounted(() => {
       v-on:input="handleInput"
       v-on:focus="handleFocus"
     />
-    <slot v-if="props.isLoading" name="spinner" :classes="style.spinner">
+    <slot v-if="props.loading" name="spinner" :classes="style.spinner">
       <svg
         :class="style.spinner"
         viewBox="0 0 100 101"
@@ -176,7 +177,7 @@ onMounted(() => {
       </slot>
     </button>
     <div
-      :class="style.content"
+      :class="[style.content, !visible ? style.contentHidden : '']"
       ref="contentEl"
     >
       <ul :class="style.list" v-if="!props.data.length">
