@@ -1,141 +1,149 @@
-import { mount } from "@vue/test-utils";
-import { describe, test, expect } from "vitest";
-import Callect from './callect.vue'
-import callectStyle from './callect.style'
+import { mount } from '@vue/test-utils';
+import { describe, test, expect } from 'vitest';
+import Callect from './callect.vue';
+import callectStyle from './callect.style';
 
 function sleep(timeout) {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(true)
-        }, timeout)
-    })
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(true);
+    }, timeout);
+  });
 }
 
 describe('callect test', () => {
-    test('component exists', () => {
-        expect(Callect).toBeDefined()
-    })
+  test('component exists', () => {
+    expect(Callect).toBeDefined();
+  });
 
-    test('base', () => {
-        const wrapper = mount(Callect, {
-            props: {
-                data: []
-            }
-        })
+  test('base', () => {
+    const wrapper = mount(Callect, {
+      props: {
+        data: [],
+      },
+    });
 
-        expect(wrapper.find(`.${callectStyle.wrapper}`).exists()).toBeTruthy()
-        expect(wrapper.find(`.${callectStyle.input}`).exists()).toBeTruthy()
-        expect(wrapper.find(`.${callectStyle.spinner}`).exists()).toBeFalsy()
-        expect(wrapper.find(`.${callectStyle.clearButton}`).exists()).toBeFalsy()
-        expect(wrapper.find(`.${callectStyle.content}`).exists()).toBeTruthy()
-        expect(wrapper.find(`.${callectStyle.contentHidden}`).exists()).toBeTruthy()
-    })
+    expect(wrapper.find(`.${callectStyle.wrapper}`).exists()).toBeTruthy();
+    expect(wrapper.find(`.${callectStyle.input}`).exists()).toBeTruthy();
+    expect(wrapper.find(`.${callectStyle.spinner}`).exists()).toBeFalsy();
+    expect(wrapper.find(`.${callectStyle.clearButton}`).exists()).toBeFalsy();
+    expect(wrapper.find(`.${callectStyle.content}`).exists()).toBeTruthy();
+    expect(
+      wrapper.find(`.${callectStyle.contentHidden}`).exists()
+    ).toBeTruthy();
+  });
 
-    test('input', async () => {
-        const wrapper = mount(Callect, {
-            props: {
-                data: [],
-                placeholder: 'Test Placeholder'
-            }
-        })
+  test('input', async () => {
+    const wrapper = mount(Callect, {
+      props: {
+        data: [],
+        placeholder: 'Test Placeholder',
+      },
+    });
 
-        const input = wrapper.find(`.${callectStyle.input}`)
-        const content = wrapper.find(`.${callectStyle.content}`)
-        
-        // Placeholder
-        expect(input.element.getAttribute('placeholder')).toEqual('Test Placeholder')
+    const input = wrapper.find(`.${callectStyle.input}`);
+    const content = wrapper.find(`.${callectStyle.content}`);
 
-        // Disabled
-        await wrapper.setProps({ disabled: true })
-        expect(input.element.disabled).toBeTruthy()
+    // Placeholder
+    expect(input.element.getAttribute('placeholder')).toEqual(
+      'Test Placeholder'
+    );
 
-        // Focus Event
-        await input.element.dispatchEvent(new Event('focus'))
-        expect(content.classes()).not.to.contain(callectStyle.contentHidden)
+    // Disabled
+    await wrapper.setProps({ disabled: true });
+    expect(input.element.disabled).toBeTruthy();
 
-        // Input Event
-        await input.element.dispatchEvent(new InputEvent('input'))
-        await sleep(500)
-        expect(wrapper.emitted()).toHaveProperty('search')
-    })
+    // Focus Event
+    await input.element.dispatchEvent(new Event('focus'));
+    expect(content.classes()).not.to.contain(callectStyle.contentHidden);
 
-    test('loading', async () => {
-        const wrapper = mount(Callect, {
-            props: {
-                data: [],
-                loading: true
-            }
-        })
+    // Input Event
+    await input.element.dispatchEvent(new InputEvent('input'));
+    await sleep(500);
+    expect(wrapper.emitted()).toHaveProperty('search');
+  });
 
-        expect(wrapper.find(`.${callectStyle.spinner}`).exists()).toBeTruthy()
+  test('loading', async () => {
+    const wrapper = mount(Callect, {
+      props: {
+        data: [],
+        loading: true,
+      },
+    });
 
-        await wrapper.setProps({ loading: false })
+    expect(wrapper.find(`.${callectStyle.spinner}`).exists()).toBeTruthy();
 
-        expect(wrapper.find(`.${callectStyle.spinner}`).exists()).toBeFalsy()
-    })
+    await wrapper.setProps({ loading: false });
 
-    test('content', async () => {
-        const wrapper = mount(Callect, {
-            props: {
-                data: [],
-                emptyMessage: 'Empty'
-            }
-        })
+    expect(wrapper.find(`.${callectStyle.spinner}`).exists()).toBeFalsy();
+  });
 
-        let list = wrapper.find(`.${callectStyle.list}`)
+  test('content', async () => {
+    const wrapper = mount(Callect, {
+      props: {
+        data: [],
+        emptyMessage: 'Empty',
+      },
+    });
 
-        // Empty
-        expect(list.find(`.${callectStyle.item}`).exists()).toBeTruthy()
-        expect(list.find(`.${callectStyle.item}`).text()).toEqual('Empty')
+    let list = wrapper.find(`.${callectStyle.list}`);
 
-        // Set Data 
-        const data = [
-            {
-                id: 1,
-                name: 'Option 1'
-            },
-            {
-                id: 2,
-                name: 'Option 2'
-            },
-            {
-                id: 3,
-                name: 'Option 3'
-            }
-        ]
-        await wrapper.setProps({
-            data
-        })
+    // Empty
+    expect(list.find(`.${callectStyle.item}`).exists()).toBeTruthy();
+    expect(list.find(`.${callectStyle.item}`).text()).toEqual('Empty');
 
-        // Update List
-        list = wrapper.find(`.${callectStyle.list}`)
+    // Set Data
+    const data = [
+      {
+        id: 1,
+        name: 'Option 1',
+      },
+      {
+        id: 2,
+        name: 'Option 2',
+      },
+      {
+        id: 3,
+        name: 'Option 3',
+      },
+    ];
+    await wrapper.setProps({
+      data,
+    });
 
-        // List Item
-        expect(list.findAll(`.${callectStyle.item}`).length).toEqual(3)
+    // Update List
+    list = wrapper.find(`.${callectStyle.list}`);
 
-        // First Item
-        let item = list.find(`.${callectStyle.item}`)
+    // List Item
+    expect(list.findAll(`.${callectStyle.item}`).length).toEqual(3);
 
-        // First Item Name
-        expect(item.text()).toEqual(data[0].name)
+    // First Item
+    let item = list.find(`.${callectStyle.item}`);
 
-        // Click Item
-        await item.trigger('click')
-        await wrapper.setProps({ modelValue: data[0] })
+    // First Item Name
+    expect(item.text()).toEqual(data[0].name);
 
-        item = list.find(`.${callectStyle.item}`)
+    // Click Item
+    await item.trigger('click');
+    await wrapper.setProps({ modelValue: data[0] });
 
-        // Search Event
-        expect(wrapper.emitted()).toHaveProperty('search')
-        expect(wrapper.emitted().search[0][0]).toEqual(data[0].name)
+    item = list.find(`.${callectStyle.item}`);
 
-        // Input Value Change
-        expect(wrapper.find(`.${callectStyle.input}`).element.value).toEqual(data[0].name)
+    // Search Event
+    expect(wrapper.emitted()).toHaveProperty('search');
+    expect(wrapper.emitted().search[0][0]).toEqual(data[0].name);
 
-        // Active Item
-        expect(item.classes()).to.contain(callectStyle.itemActive)
+    // Input Value Change
+    expect(wrapper.find(`.${callectStyle.input}`).element.value).toEqual(
+      data[0].name
+    );
 
-        // Hide Content
-        expect(wrapper.find(`.${callectStyle.content}`).classes()).to.contain(callectStyle.contentHidden)
-    })
-})
+    // Active Item
+    expect(item.classes()).to.contain(callectStyle.itemActive);
+
+    // Hide Content
+    expect(wrapper.find(`.${callectStyle.content}`).classes()).to.contain(
+      callectStyle.contentHidden
+    );
+  });
+});

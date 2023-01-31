@@ -1,9 +1,9 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue';
-import vClickOutside from 'click-outside-vue3'
+import vClickOutside from 'click-outside-vue3';
 import useVisible from '@/composes/visible.compose';
 import debounce from '@/helpers/debounce';
-import styleClasses from './callect.style'
+import styleClasses from './callect.style';
 
 const props = defineProps({
   modelValue: Object,
@@ -33,12 +33,12 @@ const props = defineProps({
   },
   classes: {
     type: Object,
-    default: () => ({})
+    default: () => ({}),
   },
   emptyMessage: {
     type: String,
-    default: 'Empty'
-  }
+    default: 'Empty',
+  },
 });
 const emit = defineEmits([
   'update:modelValue',
@@ -74,8 +74,8 @@ const style = computed(() => {
     list: [styleClasses.list, props.classes.list],
     item: [styleClasses.item, props.classes.item],
     itemActive: [styleClasses.itemActive, props.classes.itemActive],
-  }
-})
+  };
+});
 
 function isItemActive(item) {
   return selectedItem.value
@@ -171,8 +171,19 @@ onMounted(() => {
       v-on:click="handleClickClear"
     >
       <slot name="clear" :classes="style.clearIcon">
-        <svg :class="style.clearIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        <svg
+          :class="style.clearIcon"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke-width="1.5"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            d="M6 18L18 6M6 6l12 12"
+          />
         </svg>
       </slot>
     </button>
